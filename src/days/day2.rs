@@ -32,19 +32,19 @@ impl Input {
 }
 
 fn parse_input(input: &str) -> Input {
-    let a = input.split_ascii_whitespace().collect::<Vec<&str>>();
+    let split_input = input.split_ascii_whitespace().collect::<Vec<&str>>();
 
-    let letter = a.get(1).unwrap().replace(":", "").chars().next().unwrap();
-    let password: String = a.get(2).unwrap().to_string();
+    let min_and_max: Vec<usize> = split_input[0]
+        .split('-')
+        .map(|x| x.parse().unwrap())
+        .collect();
 
-    let min_and_max: Vec<&str> = a.get(0).unwrap().split('-').collect();
-
-    let min: usize = min_and_max.get(0).unwrap().parse().unwrap();
-    let max: usize = min_and_max.get(1).unwrap().parse().unwrap();
+    let letter = split_input[1].replace(":", "").chars().next().unwrap();
+    let password: String = split_input[2].to_string();
 
     Input {
-        min,
-        max,
+        min: min_and_max[0],
+        max: min_and_max[1],
         letter,
         password,
     }
@@ -60,11 +60,13 @@ pub fn run() {
         .map(parse_input)
         .collect();
 
+    // 477
     println!(
         "Part 1 answer is: {}",
         inputs.iter().filter(|x| x.is_valid_part1()).count(),
     );
 
+    // 686
     println!(
         "Part 2 answer is: {}",
         inputs.iter().filter(|x| x.is_valid_part2()).count(),
