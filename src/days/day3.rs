@@ -6,18 +6,19 @@ struct Matrix {
 }
 
 impl Matrix {
-    fn get(&self, vertical_index: usize, horizontal_index: usize) -> char {
-        let horizontal_row = &self.value[vertical_index];
+    fn get(&self, vertical_index: usize, horizontal_index: usize) -> Option<char> {
+        let horizontal_row = &self.value.get(vertical_index)?;
+
         let horizontal_row_length = horizontal_row.len();
 
         if horizontal_index > (horizontal_row_length - 1) {
             let overlap_count = horizontal_index / horizontal_row_length;
             let new_horizontal_index = horizontal_index - horizontal_row_length * overlap_count;
 
-            return horizontal_row[new_horizontal_index];
+            return horizontal_row.get(new_horizontal_index).copied();
         }
 
-        horizontal_row[horizontal_index]
+        horizontal_row.get(horizontal_index).copied()
     }
 
     fn horizontal_rows_count(&self) -> usize {
@@ -29,16 +30,12 @@ impl Matrix {
         let mut start_horizontal_index = 0;
 
         for vertical in 1..self.horizontal_rows_count() {
-            let vertical_index = vertical * down_amount;
-
             start_horizontal_index += right_amount;
 
-            if vertical_index > self.horizontal_rows_count() {
-                break;
-            }
-
-            if self.get(vertical_index, start_horizontal_index) == '#' {
-                tree_counter += 1;
+            if let Some(ch) = self.get(vertical * down_amount, start_horizontal_index) {
+                if ch == '#' {
+                    tree_counter += 1;
+                }
             }
         }
 
