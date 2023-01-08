@@ -13,21 +13,17 @@ fn get_char_at(
     horizontal_row.get(horizontal_index - horizontal_row_length * overlap_count)
 }
 
-fn travel(matrix: &Vec<Vec<char>>, right_amount: usize, down_amount: usize) -> i32 {
-    let mut tree_counter = 0;
-    let mut start_horizontal_index = 0;
-
-    for vertical in 1..matrix.iter().count() {
-        start_horizontal_index += right_amount;
-
-        if let Some(&ch) = get_char_at(matrix, vertical * down_amount, start_horizontal_index) {
-            if ch == '#' {
-                tree_counter += 1;
+fn travel(matrix: &Vec<Vec<char>>, right_amount: usize, down_amount: usize) -> usize {
+    (1..matrix.iter().count())
+        .filter(|vertical| {
+            if let Some(&ch) = get_char_at(matrix, vertical * down_amount, vertical * right_amount)
+            {
+                return ch == '#';
             }
-        }
-    }
 
-    tree_counter
+            false
+        })
+        .count()
 }
 
 pub fn run() {
